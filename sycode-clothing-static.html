@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYCODE CLOTHING - STYLE OUT SIDE THE CODE</title>
+    <meta name="description" content="Tienda de streetwear urbano SYCODE CLOTHING. Ropa urbana, hoodies, camisetas y accesorios que rompen todos los códigos del estilo convencional.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --neon-white: #ffffff;
+            --neon-gray: #808080;
+            --bg-black: #000000;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .text-neon-white {
+            color: var(--neon-white);
+        }
+        
+        .text-neon-gray {
+            color: var(--neon-gray);
+        }
+        
+        .border-neon-white {
+            border-color: var(--neon-white);
+        }
+        
+        .bg-neon-white {
+            background-color: var(--neon-white);
+        }
+        
+        .hover\:bg-neon-white:hover {
+            background-color: var(--neon-white);
+        }
+        
+        .hover\:bg-neon-gray:hover {
+            background-color: var(--neon-gray);
+        }
+        
+        .border-neon-gray {
+            border-color: var(--neon-gray);
+        }
+        
+        .bg-neon-gray {
+            background-color: var(--neon-gray);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-bot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .chat-window {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            z-index: 1000;
+            background: black;
+            border: 1px solid white;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: black;
+            border-left: 1px solid white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+        }
+        
+        .cart-sidebar.open {
+            right: 0;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: none;
+        }
+        
+        .modal-overlay.show {
+            display: block;
+        }
+        
+        .grid-masonry {
+            column-count: 3;
+            column-gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-masonry {
+                column-count: 1;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid-masonry {
+                column-count: 2;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-mono">
+    <!-- Header -->
+    <header class="bg-black border-b border-neon-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="cursor-pointer" onclick="navigateTo('home')">
+                        <h1 class="font-bold text-2xl text-neon-white font-mono tracking-wider">SYCODE</h1>
+                        <p class="text-xs text-neon-gray uppercase tracking-widest">CLOTHING</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" onclick="navigateTo('home')" class="text-white hover:text-neon-gray transition-colors duration-300">INICIO</a>
+                    <a href="#" onclick="navigateTo('products')" class="text-white hover:text-neon-gray transition-colors duration-300">PRODUCTOS</a>
+                    <a href="#" onclick="showCategory('ropa')" class="text-white hover:text-neon-gray transition-colors duration-300">ROPA</a>
+                    <a href="#" onclick="showCategory('accesorios')" class="text-white hover:text-neon-gray transition-colors duration-300">ACCESORIOS</a>
+                    <a href="#" onclick="showCategory('sneakers')" class="text-white hover:text-neon-gray transition-colors duration-300">SNEAKERS</a>
+                </nav>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCart()" class="relative p-2 text-white hover:text-neon-gray transition-colors duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0h15M17 21a2 2 0 11-4 0 2 2 0 014 0zM9 21a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-neon-white text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Home Page -->
+        <div id="home-page" class="page">
+            <!-- Hero Section -->
+            <section class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div class="space-y-8">
+                        <h1 class="text-6xl md:text-8xl font-bold text-neon-white font-mono tracking-wider">
+                            SYCODE
+                        </h1>
+                        <p class="text-2xl md:text-3xl text-neon-gray uppercase tracking-widest">
+                            CLOTHING
+                        </p>
+                        <p class="text-lg text-white max-w-2xl mx-auto leading-relaxed">
+                            STYLE OUT SIDE THE CODE
+                        </p>
+                        <p class="text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                            Rompiendo todos los códigos del streetwear con diseños que desafían lo convencional. 
+                            Cada pieza cuenta una historia de rebeldía urbana y autenticidad sin límites.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button onclick="navigateTo('products')" class="px-8 py-4 bg-neon-white text-black font-semibold hover:bg-gray-200 transition-colors duration-300">
+                                VER TIENDA
+                            </button>
+                            <button onclick="navigateTo('products')" class="px-8 py-4 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300">
+                                EXPLORAR COLECCIÓN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Categories -->
+            <section class="py-24 bg-black">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-neon-white mb-4 font-mono tracking-wider">CATEGORÍAS</h2>
+                        <div class="h-1 w-24 bg-neon-white mx-auto"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div onclick="showCategory('ropa')" class="relative overflow-hidden cursor-pointer card-hover group">
+                            <div class="aspect-square bg-gray-900 border border-neon-white flex items-center justify-center">
+                                <div class="text-center">
+                                    <h3 class="text-2xl font-bold text-neon-white mb-2">ROPA</h3>
+                                    <p class="text-neon-gray">Hoodies, Camisetas, Pantalones</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div onclick="showCategory('accesorios')" class="relative overflow-hidden cursor-pointer card-hover group">
+                            <div class="aspect-square bg-gray-900 border border-neon-white flex items-center justify-center">
+                                <div class="text-center">
+                                    <h3 class="text-2xl font-bold text-neon-white mb-2">ACCESORIOS</h3>
+                                    <p class="text-neon-gray">Gorras, Bolsos, Joyas</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div onclick="showCategory('sneakers')" class="relative overflow-hidden cursor-pointer card-hover group">
+                            <div class="aspect-square bg-gray-900 border border-neon-white flex items-center justify-center">
+                                <div class="text-center">
+                                    <h3 class="text-2xl font-bold text-neon-white mb-2">SNEAKERS</h3>
+                                    <p class="text-neon-gray">Zapatillas Urbanas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Showcase -->
+            <section class="py-24 bg-black">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-neon-white mb-4 font-mono tracking-wider">PRODUCTOS DESTACADOS</h2>
+                        <div class="h-1 w-24 bg-neon-white mx-auto"></div>
+                    </div>
+                    <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletter -->
+            <section class="py-24 bg-black border-t border-neon-white">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl font-bold text-neon-white mb-4 font-mono tracking-wider">ÚNETE AL CODE</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        Sé el primero en conocer nuestros nuevos drops, ofertas exclusivas y contenido behind the scenes.
+                    </p>
+                    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input 
+                            type="email" 
+                            id="newsletter-email"
+                            placeholder="tu@email.com" 
+                            required
+                            class="flex-1 px-4 py-3 bg-black border border-neon-white text-white placeholder-gray-500 focus:outline-none focus:border-neon-gray"
+                        >
+                        <button 
+                            type="submit" 
+                            class="px-8 py-3 bg-neon-white text-black font-semibold hover:bg-gray-200 transition-colors duration-300"
+                        >
+                            SUSCRIBIRSE
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products-page" class="page hidden">
+            <section class="py-24 bg-black">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-4xl font-bold text-neon-white mb-4 font-mono tracking-wider">TODOS LOS PRODUCTOS</h1>
+                        <div class="h-1 w-24 bg-neon-white mx-auto"></div>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="mb-8 flex flex-wrap gap-4 justify-center">
+                        <button onclick="filterProducts('all')" class="px-4 py-2 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300 filter-btn active">
+                            TODOS
+                        </button>
+                        <button onclick="filterProducts('ropa')" class="px-4 py-2 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300 filter-btn">
+                            ROPA
+                        </button>
+                        <button onclick="filterProducts('accesorios')" class="px-4 py-2 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300 filter-btn">
+                            ACCESORIOS
+                        </button>
+                        <button onclick="filterProducts('sneakers')" class="px-4 py-2 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300 filter-btn">
+                            SNEAKERS
+                        </button>
+                    </div>
+
+                    <div id="all-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Terms Page -->
+        <div id="terms-page" class="page hidden">
+            <section class="py-24 bg-black">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h1 class="text-4xl font-bold text-neon-white mb-4 font-mono tracking-wider">TÉRMINOS Y CONDICIONES</h1>
+                        <div class="h-1 w-24 bg-neon-white mx-auto"></div>
+                    </div>
+                    
+                    <div class="space-y-8 text-gray-300">
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">1. Información General</h2>
+                            <p class="leading-relaxed">
+                                Bienvenido a SYCODE CLOTHING. Estos términos y condiciones rigen el uso de nuestro sitio web y la compra de nuestros productos.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">2. Productos y Precios</h2>
+                            <p class="leading-relaxed">
+                                Todos los productos están sujetos a disponibilidad. Los precios pueden cambiar sin previo aviso.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">3. Contacto</h2>
+                            <p class="leading-relaxed">
+                                Para preguntas: <a href="mailto:sycode.oficial@gmail.com" class="text-neon-white hover:underline">sycode.oficial@gmail.com</a>
+                            </p>
+                        </section>
+                    </div>
+                    
+                    <div class="text-center mt-12">
+                        <button onclick="navigateTo('home')" class="px-8 py-3 bg-neon-white text-black font-semibold hover:bg-gray-200 transition-colors duration-300">
+                            VOLVER AL INICIO
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Privacy Page -->
+        <div id="privacy-page" class="page hidden">
+            <section class="py-24 bg-black">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h1 class="text-4xl font-bold text-neon-white mb-4 font-mono tracking-wider">POLÍTICA DE PRIVACIDAD</h1>
+                        <div class="h-1 w-24 bg-neon-white mx-auto"></div>
+                    </div>
+                    
+                    <div class="space-y-8 text-gray-300">
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">1. Información que Recopilamos</h2>
+                            <p class="leading-relaxed">
+                                Recopilamos información que nos proporcionas directamente cuando realizas una compra o te comunicas con nosotros.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">2. Cómo Utilizamos tu Información</h2>
+                            <p class="leading-relaxed">
+                                Utilizamos la información para procesar pedidos, comunicarnos contigo y mejorar nuestros servicios.
+                            </p>
+                        </section>
+                        
+                        <section>
+                            <h2 class="text-2xl font-semibold text-neon-white mb-4">3. Contacto</h2>
+                            <p class="leading-relaxed">
+                                Para preguntas sobre privacidad: <a href="mailto:sycode.oficial@gmail.com" class="text-neon-white hover:underline">sycode.oficial@gmail.com</a>
+                            </p>
+                        </section>
+                    </div>
+                    
+                    <div class="text-center mt-12">
+                        <button onclick="navigateTo('home')" class="px-8 py-3 bg-neon-white text-black font-semibold hover:bg-gray-200 transition-colors duration-300">
+                            VOLVER AL INICIO
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-16 border-t border-neon-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Brand Column -->
+                <div>
+                    <div class="mb-6">
+                        <h2 class="font-bold text-2xl text-neon-white font-mono tracking-wider">SYCODE</h2>
+                        <p class="text-sm text-neon-gray uppercase tracking-widest">CLOTHING</p>
+                        <p class="text-xs text-white mt-1">STYLE OUT SIDE THE CODE</p>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        Rompiendo todos los códigos del streetwear con diseños que desafían lo convencional.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://instagram.com/sycode.clothing" target="_blank" class="w-10 h-10 bg-black border border-neon-white rounded-full flex items-center justify-center hover:bg-neon-white hover:text-black transition-colors duration-300">
+                            <span class="text-xs">IG</span>
+                        </a>
+                        <a href="https://tiktok.com/@sycode.clothing" target="_blank" class="w-10 h-10 bg-black border border-neon-gray rounded-full flex items-center justify-center hover:bg-neon-gray hover:text-black transition-colors duration-300">
+                            <span class="text-xs">TT</span>
+                        </a>
+                        <a href="mailto:sycode.oficial@gmail.com" class="w-10 h-10 bg-black border border-neon-white rounded-full flex items-center justify-center hover:bg-neon-white hover:text-black transition-colors duration-300">
+                            <span class="text-xs font-bold">@</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Shop Column -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-6">SHOP</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" onclick="navigateTo('products')" class="text-gray-400 hover:text-white transition-colors duration-300">Nuevos Arrivals</a></li>
+                        <li><a href="#" onclick="showCategory('ropa')" class="text-gray-400 hover:text-white transition-colors duration-300">Hoodies</a></li>
+                        <li><a href="#" onclick="showCategory('ropa')" class="text-gray-400 hover:text-white transition-colors duration-300">Camisetas</a></li>
+                        <li><a href="#" onclick="showCategory('accesorios')" class="text-gray-400 hover:text-white transition-colors duration-300">Accesorios</a></li>
+                        <li><a href="#" onclick="showCategory('sneakers')" class="text-gray-400 hover:text-white transition-colors duration-300">Sneakers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support Column -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-6">SOPORTE</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Centro de Ayuda</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Guía de Tallas</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Contacto</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-6">EMPRESA</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Sobre Nosotros</a></li>
+                        <li><a href="#" onclick="navigateTo('terms')" class="text-gray-400 hover:text-white transition-colors duration-300">Términos y Condiciones</a></li>
+                        <li><a href="#" onclick="navigateTo('privacy')" class="text-gray-400 hover:text-white transition-colors duration-300">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Trust Elements Section -->
+            <div class="border-t border-neon-white mt-12 pt-8">
+                <div class="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0">
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start space-x-6 space-y-2">
+                        <div class="flex items-center space-x-2 text-neon-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs font-semibold">COMPRA SEGURA</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-neon-gray">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-xs font-semibold">SSL CERTIFICADO</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-neon-white">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs font-semibold">GARANTÍA 100%</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-400 text-xs">MÉTODOS DE PAGO:</span>
+                        <div class="flex items-center space-x-3">
+                            <div class="h-6 w-10 bg-white border border-gray-600 rounded text-black text-xs flex items-center justify-center font-bold">VISA</div>
+                            <div class="h-6 w-10 bg-white border border-gray-600 rounded text-black text-xs flex items-center justify-center font-bold">MC</div>
+                            <div class="h-6 w-10 bg-white border border-gray-600 rounded text-black text-xs flex items-center justify-center font-bold">PP</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8 pt-6 border-t border-gray-800">
+                    <p class="text-gray-400 text-sm">&copy; 2024 SYCODE CLOTHING. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-overlay" class="modal-overlay" onclick="toggleCart()"></div>
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="h-full flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b border-neon-white">
+                <h2 class="text-lg font-semibold text-neon-white">CARRITO</h2>
+                <button onclick="toggleCart()" class="text-white hover:text-neon-gray">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4">
+                <p class="text-gray-400 text-center">Tu carrito está vacío</p>
+            </div>
+            <div class="border-t border-neon-white p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-semibold">Total:</span>
+                    <span id="cart-total" class="font-bold text-lg">$0.00</span>
+                </div>
+                <button class="w-full py-3 bg-neon-white text-black font-semibold hover:bg-gray-200 transition-colors duration-300">
+                    CHECKOUT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ChatBot -->
+    <div class="chat-bot">
+        <button id="chat-toggle" onclick="toggleChat()" class="w-14 h-14 bg-neon-white text-black rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors duration-300 shadow-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="chat-window" class="chat-window">
+        <div class="h-full flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b border-neon-white">
+                <h3 class="font-semibold text-neon-white">SYCODE Support</h3>
+                <button onclick="toggleChat()" class="text-white hover:text-neon-gray">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div class="flex items-start space-x-2">
+                    <div class="w-8 h-8 bg-neon-white rounded-full flex items-center justify-center text-black text-xs font-bold">S</div>
+                    <div class="bg-gray-800 rounded-lg p-3 max-w-xs">
+                        <p class="text-sm text-white">¡Hola! Soy el asistente virtual de SYCODE CLOTHING. ¿En qué puedo ayudarte hoy?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-neon-white">
+                <form id="chat-form" class="flex space-x-2">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        placeholder="Escribe tu mensaje..." 
+                        class="flex-1 px-3 py-2 bg-black border border-neon-white text-white text-sm focus:outline-none focus:border-neon-gray"
+                        required
+                    >
+                    <button type="submit" class="px-4 py-2 bg-neon-white text-black hover:bg-gray-200 transition-colors duration-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            {
+                id: 1,
+                name: "Hoodie Urbano Premium",
+                price: "$89.99",
+                originalPrice: "$129.99",
+                category: "ropa",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23111'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='20'%3EHOODIE%3C/text%3E%3C/svg%3E",
+                featured: true,
+                onSale: true
+            },
+            {
+                id: 2,
+                name: "Camiseta Code Breaker",
+                price: "$39.99",
+                category: "ropa",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23222'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='18'%3ET-SHIRT%3C/text%3E%3C/svg%3E",
+                featured: true
+            },
+            {
+                id: 3,
+                name: "Gorra SYCODE",
+                price: "$29.99",
+                category: "accesorios",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23333'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='20'%3ECAP%3C/text%3E%3C/svg%3E",
+                featured: false
+            },
+            {
+                id: 4,
+                name: "Sneakers Elite Urban",
+                price: "$159.99",
+                category: "sneakers",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23444'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='18'%3ESNEAKERS%3C/text%3E%3C/svg%3E",
+                featured: true
+            },
+            {
+                id: 5,
+                name: "Pantalón Urban Tech",
+                price: "$79.99",
+                category: "ropa",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23555'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='18'%3EPANTS%3C/text%3E%3C/svg%3E",
+                featured: false
+            },
+            {
+                id: 6,
+                name: "Bolso Tech Messenger",
+                price: "$59.99",
+                category: "accesorios",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23666'/%3E%3Ctext x='200' y='200' text-anchor='middle' dy='.3em' fill='white' font-family='monospace' font-size='20'%3EBAG%3C/text%3E%3C/svg%3E",
+                featured: false
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+        let currentPage = 'home';
+
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+
+        function updateCartTotal() {
+            const cartTotal = document.getElementById('cart-total');
+            const total = cart.reduce((sum, item) => {
+                const price = parseFloat(item.price.replace('$', ''));
+                return sum + (price * item.quantity);
+            }, 0);
+            cartTotal.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({...product, quantity: 1});
+                }
+                updateCartCount();
+                updateCartTotal();
+                renderCartItems();
+                
+                // Show success message
+                alert(`${product.name} agregado al carrito!`);
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            updateCartTotal();
+            renderCartItems();
+        }
+
+        function renderCartItems() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-400 text-center">Tu carrito está vacío</p>';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = cart.map(item => `
+                <div class="flex items-center space-x-4 border-b border-gray-800 pb-4 mb-4">
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-white text-sm">${item.name}</h4>
+                        <p class="text-gray-400 text-sm">${item.price}</p>
+                        <p class="text-gray-400 text-sm">Cantidad: ${item.quantity}</p>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            
+            cartSidebar.classList.toggle('open');
+            cartOverlay.classList.toggle('show');
+        }
+
+        // Product rendering
+        function renderProduct(product, container) {
+            const productHtml = `
+                <div class="card-hover cursor-pointer" onclick="addToCart(${product.id})">
+                    <div class="aspect-square overflow-hidden border border-neon-white">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-neon-white mb-2">${product.name}</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-neon-white font-bold">${product.price}</span>
+                                ${product.originalPrice ? `<span class="text-gray-400 line-through ml-2">${product.originalPrice}</span>` : ''}
+                            </div>
+                            ${product.onSale ? '<span class="bg-neon-white text-black px-2 py-1 text-xs font-bold">SALE</span>' : ''}
+                        </div>
+                        <button class="w-full mt-4 py-2 border border-neon-white text-white hover:bg-neon-white hover:text-black transition-colors duration-300">
+                            AGREGAR AL CARRITO
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += productHtml;
+        }
+
+        function loadFeaturedProducts() {
+            const container = document.getElementById('featured-products');
+            container.innerHTML = '';
+            products.filter(p => p.featured).forEach(product => {
+                renderProduct(product, container);
+            });
+        }
+
+        function loadAllProducts() {
+            const container = document.getElementById('all-products');
+            container.innerHTML = '';
+            products.forEach(product => {
+                renderProduct(product, container);
+            });
+        }
+
+        function filterProducts(category) {
+            const container = document.getElementById('all-products');
+            container.innerHTML = '';
+            
+            const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
+            filteredProducts.forEach(product => {
+                renderProduct(product, container);
+            });
+
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Navigation
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            
+            // Show selected page
+            const targetPage = document.getElementById(`${page}-page`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                currentPage = page;
+                
+                // Load content based on page
+                if (page === 'products') {
+                    loadAllProducts();
+                }
+            }
+        }
+
+        function showCategory(category) {
+            navigateTo('products');
+            setTimeout(() => {
+                filterProducts(category);
+            }, 100);
+        }
+
+        // Chat functionality
+        let chatOpen = false;
+        let sessionId = 'static_session_' + Date.now();
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            chatOpen = !chatOpen;
+            chatWindow.style.display = chatOpen ? 'block' : 'none';
+        }
+
+        function addChatMessage(message, isBot = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageHtml = `
+                <div class="flex items-start space-x-2 ${isBot ? '' : 'justify-end'}">
+                    ${isBot ? '<div class="w-8 h-8 bg-neon-white rounded-full flex items-center justify-center text-black text-xs font-bold">S</div>' : ''}
+                    <div class="bg-${isBot ? 'gray-800' : 'neon-white'} rounded-lg p-3 max-w-xs">
+                        <p class="text-sm text-${isBot ? 'white' : 'black'}">${message}</p>
+                    </div>
+                    ${!isBot ? '<div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-white text-xs font-bold">U</div>' : ''}
+                </div>
+            `;
+            chatMessages.innerHTML += messageHtml;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateBotResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            if (lowerMessage.includes('hola') || lowerMessage.includes('hey') || lowerMessage.includes('hi')) {
+                return '¡Hola! Bienvenido a SYCODE CLOTHING. Estoy aquí para ayudarte con cualquier pregunta sobre nuestros productos o tu pedido.';
+            } else if (lowerMessage.includes('precio') || lowerMessage.includes('costo')) {
+                return 'Nuestros precios varían según el producto. Puedes ver todos los precios en nuestra tienda online. ¿Hay algún producto específico que te interese?';
+            } else if (lowerMessage.includes('envío') || lowerMessage.includes('shipping')) {
+                return 'Ofrecemos envío a nivel nacional. Los tiempos de entrega son de 3-5 días hábiles. ¡Envío gratis en compras mayores a $100!';
+            } else if (lowerMessage.includes('talla') || lowerMessage.includes('size')) {
+                return 'Tenemos una guía completa de tallas en cada producto. Si tienes dudas específicas, puedes contactarnos directamente.';
+            } else if (lowerMessage.includes('devolución') || lowerMessage.includes('cambio')) {
+                return 'Aceptamos devoluciones dentro de 30 días posteriores a la compra. El producto debe estar en condiciones originales.';
+            } else {
+                return 'Gracias por tu mensaje. Un representante de SYCODE se pondrá en contacto contigo pronto. También puedes escribirnos a sycode.oficial@gmail.com';
+            }
+        }
+
+        // Newsletter functionality
+        function handleNewsletterSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            
+            if (email) {
+                alert('¡Gracias por suscribirte a SYCODE CLOTHING! Te mantendremos informado sobre nuestros nuevos drops.');
+                document.getElementById('newsletter-email').value = '';
+            }
+        }
+
+        // Chat form handling
+        function handleChatSubmit(event) {
+            event.preventDefault();
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // Add user message
+                addChatMessage(message, false);
+                chatInput.value = '';
+                
+                // Simulate bot response
+                setTimeout(() => {
+                    const response = generateBotResponse(message);
+                    addChatMessage(response, true);
+                }, 1000);
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load featured products on home page
+            loadFeaturedProducts();
+            
+            // Set up event listeners
+            document.getElementById('newsletter-form').addEventListener('submit', handleNewsletterSubmit);
+            document.getElementById('chat-form').addEventListener('submit', handleChatSubmit);
+            
+            // Initialize cart
+            updateCartCount();
+            updateCartTotal();
+        });
+
+        // Add CSS classes for active filter buttons
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                .filter-btn.active {
+                    background-color: var(--neon-white);
+                    color: black;
+                }
+            </style>
+        `);
+    </script>
+</body>
+</html>
