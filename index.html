@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYCODE CLOTHING</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: white;
+    }
+    header {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      color: #0ff;
+    }
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+    }
+    nav a {
+      color: #0ff;
+      text-decoration: none;
+    }
+    section {
+      padding: 20px;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .product {
+      background: #111;
+      padding: 10px;
+      border: 1px solid #0ff;
+    }
+    .chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111;
+      border: 1px solid #0ff;
+      width: 300px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+    }
+    .chatbot textarea {
+      width: 100%;
+      height: 60px;
+      margin-top: 5px;
+      background: #000;
+      color: white;
+    }
+    .chat-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0ff;
+      color: black;
+      border-radius: 50%;
+      padding: 15px;
+      cursor: pointer;
+    }
+    .cart {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #0ff;
+      color: black;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>SYCODE CLOTHING</header>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#productos">Productos</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <div class="cart" onclick="enviarPedido()">Ver carrito (<span id="cart-count">0</span>)</div>
+
+  <section id="inicio">
+    <h2>Bienvenido a SYCODE CLOTHING</h2>
+    <p>Moda urbana y accesorios con estilo único.</p>
+  </section>
+
+  <section id="productos">
+    <h2>Productos</h2>
+    <div class="products">
+      <div class="product">
+        <h3>Camiseta Negra</h3>
+        <p>$50.000</p>
+        <button onclick="agregarAlCarrito('Camiseta Negra', 50000)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <h3>Gorra SYCODE</h3>
+        <p>$30.000</p>
+        <button onclick="agregarAlCarrito('Gorra SYCODE', 30000)">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros">
+    <h2>Sobre Nosotros</h2>
+    <p>Somos una marca creada para los que quieren destacar. Ropa con estilo, actitud y calidad.</p>
+  </section>
+
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <form>
+      <input type="text" placeholder="Tu nombre" required><br>
+      <input type="email" placeholder="Tu correo" required><br>
+      <textarea placeholder="Tu mensaje"></textarea><br>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <div class="chat-icon" onclick="toggleChat()">Chat</div>
+  <div class="chatbot" id="chat">
+    <strong>Asistente SYCODE</strong>
+    <div id="chatlog">
+      <p><em>Hola! ¿En qué te puedo ayudar?</em></p>
+    </div>
+    <textarea id="chatInput" placeholder="Escribe aquí..." onkeydown="if(event.key==='Enter'){responderChat()}"></textarea>
+  </div>
+
+  <script>
+    let carrito = [];
+
+    function agregarAlCarrito(nombre, precio) {
+      carrito.push({ nombre, precio });
+      document.getElementById('cart-count').innerText = carrito.length;
+    }
+
+    function enviarPedido() {
+      if (carrito.length === 0) return alert("El carrito está vacío.");
+      let mensaje = "Hola! Quiero hacer un pedido:%0A";
+      carrito.forEach(p => {
+        mensaje += `- ${p.nombre}: $${p.precio}%0A`;
+      });
+      let url = `https://wa.me/573001112233?text=${mensaje}`;
+      window.open(url, '_blank');
+    }
+
+    function toggleChat() {
+      const chat = document.getElementById('chat');
+      chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function responderChat() {
+      const input = document.getElementById('chatInput');
+      const log = document.getElementById('chatlog');
+      const texto = input.value.toLowerCase();
+      let respuesta = 'No entendí eso. ¿Puedes reformularlo?';
+
+      if (texto.includes('pago')) respuesta = 'Aceptamos pagos por Nequi, Daviplata y efectivo.';
+      if (texto.includes('env')) respuesta = 'Hacemos envíos a toda Colombia.';
+      if (texto.includes('horario')) respuesta = 'Atendemos de 9am a 7pm de lunes a sábado.';
+
+      log.innerHTML += `<p><strong>Tú:</strong> ${input.value}</p>`;
+      log.innerHTML += `<p><strong>Bot:</strong> ${respuesta}</p>`;
+      input.value = '';
+      log.scrollTop = log.scrollHeight;
+    }
+  </script>
+</body>
+</html>
